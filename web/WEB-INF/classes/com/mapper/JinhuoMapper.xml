@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.JinhuoMapper">
+	<select id="findJinhuoList" 
+		resultType="Jinhuo">
+		select * from jinhuo 
+	</select>
+	
+	<select id="query" parameterType="java.util.Map" resultType="Jinhuo">
+		
+		select  * from   jinhuo 
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+			
+ 
+			<if test="startDate!=null and startDate!=''"> 
+			   and cdate &gt;= #{startDate}
+			</if>
+			
+			<if test="endDate!=null and endDate!=''">
+			   and cdate &lt;= #{endDate}
+			</if>
+			
+		</where>
+		<if test="page">
+			limit #{offset} ,#{pageSize}
+		</if>
+		
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="Int">
+		select count(0) from jinhuo  
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+ 
+			<if test="startDate!=null and startDate!=''"> 
+			   and cdate &gt;= #{startDate}
+			</if>
+			
+			<if test="endDate!=null and endDate!=''">
+			   and cdate &lt;= #{endDate}
+			</if>
+		</where>		
+		
+	</select>
+	
+	
+	
+	
+	<select id="queryJinhuoById" parameterType="int" resultType="Jinhuo">
+		select * from jinhuo where id=${value}
+	</select>
+ 
+
+
+	<insert id="insertJinhuo" useGeneratedKeys="true" keyProperty="id" parameterType="Jinhuo">
+		insert into jinhuo
+		(goodsid,companyid,num,danjia,cdate)
+		values
+		(#{goodsid},#{companyid},#{num},#{danjia},#{cdate});
+	</insert>
+ 
+	
+
+
+	<update id="updateJinhuo" parameterType="Jinhuo" >
+		update jinhuo set
+		num=#{num},danjia=#{danjia}
+		where
+		id=#{id}	
+	</update>
+	
+ 
+	
+	<delete id="deleteJinhuo" parameterType="int">
+	    delete from  jinhuo where id=${value}
+	</delete>
+	
+	
+	<select id="jinhuoJS" parameterType="int"  resultType="Int">
+		SELECT IFNULL(SUM(danjia*num) ,0)  FROM jinhuo WHERE YEAR(cdate) = YEAR(CURDATE()) ;
+	</select>
+
+</mapper>
+
+ 

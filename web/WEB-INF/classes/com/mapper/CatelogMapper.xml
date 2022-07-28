@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.CatelogMapper">
+	<select id="findCatelogList" 
+		resultType="Catelog">
+		select * from catelog 
+	</select>
+	
+	<select id="query" parameterType="java.util.Map" resultType="Catelog">
+		select * from catelog  
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+			 
+		</where>
+	</select>
+	
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="Int">
+		select count(0) from catelog  
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+		
+			
+		</where>		
+		
+	</select>
+	
+	
+	
+	<select id="queryCatelogById" parameterType="int" resultType="Catelog">
+		select * from catelog where id=${value}
+	</select>
+ 
+
+
+	<insert id="insertCatelog" useGeneratedKeys="true" keyProperty="id" parameterType="Catelog">
+		insert into catelog
+		(name)
+		values
+		(#{name});
+	</insert>
+ 
+	
+  
+ 
+ 
+ 
+ 
+
+
+
+	<update id="updateCatelog" parameterType="Catelog" >
+		update catelog set
+		 name=#{name}
+		where
+		id=#{id}	
+	</update>
+	
+ 
+	
+	<delete id="deleteCatelog" parameterType="int">
+	    delete from  catelog where id=${value}
+	</delete>
+
+</mapper>
+
+ 

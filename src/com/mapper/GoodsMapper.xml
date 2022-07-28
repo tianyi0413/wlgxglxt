@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.GoodsMapper">
+	<select id="findGoodsList" 
+		resultType="Goods">
+		select * from goods 
+	</select>
+	
+	<select id="query" parameterType="java.util.Map" resultType="Goods">
+		 
+		select  * from goods 
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+		
+			<if test="temp==1">
+			   and kcnum  &gt; 0
+			</if>
+			<if test="name!=null and name!=''">
+				and name like '%${name}%'
+			</if>
+		</where>
+		<if test="page">
+			   limit #{offset} ,#{pageSize}
+		</if>
+		
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="Int">
+		select count(0) from goods  
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+				<if test="temp==1">
+			   and kcnum  &gt; 0
+			</if>
+		</where>		
+		
+	</select>
+	
+	
+	<select id="reportSales" parameterType="java.util.Map" resultType="Goods">
+		 
+			
+	select * from
+  (
+    select goodsid,sum(num) num from torder 
+ 
+       <where>
+			<if test="1==1">
+			   and type=1  
+			</if>
+			<if test="startdate!=null and startdate!=''"> 
+			   and cdate &gt;= #{startdate}
+			</if>
+			<if test="enddate!=null and enddate!=''">
+			   and cdate &lt;= #{enddate}
+			</if>
+		</where>
+       
+       
+        group by goodsid  order by num desc
+    )  a  left join goods c on a.goodsid=c.id left join catelog b on c.type = b.name 
+
+       <where>
+			 
+			<if test="type!=null and type!=''"> 
+			   and type  = #{type}
+			</if>
+			 
+		</where>
+ 
+	</select>
+	
+	
+
+	
+	
+	
+	<select id="queryGoodsById" parameterType="int" resultType="Goods">
+		select * from goods where id=${value}
+	</select>
+ 
+
+
+	<insert id="insertGoods" useGeneratedKeys="true" keyProperty="id" parameterType="Goods">
+		insert into goods
+		(bianhao,name,companyid,shoujia,note,type,kcnum)
+		values
+		(#{bianhao},#{name},#{companyid},#{shoujia},#{note},#{type},#{kcnum});
+	</insert>
+ 
+	
+
+
+	<update id="updateGoods" parameterType="Goods" >
+		update goods set
+		name=#{name},companyid=#{companyid},shoujia=#{shoujia},note=#{note},type=#{type},kcnum=#{kcnum}
+		where
+		id=#{id}	
+	</update>
+	
+ 
+	
+	<delete id="deleteGoods" parameterType="int">
+	    delete from  goods where id=${value}
+	</delete>
+	
+	
+
+
+</mapper>
+
+ 

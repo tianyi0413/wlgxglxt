@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.OrderMapper">
+	<select id="findOrderList" 
+		resultType="Order">
+		select * from torder 
+	</select>
+	
+	<select id="query" parameterType="java.util.Map" resultType="Order">
+		
+		select   * from    torder
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+			<if test="uid!=null and uid!=0">
+			   and uid= #{uid}
+			</if>
+			<if test="type!=null">
+			   and type= #{type}
+			</if>
+ 
+			<if test="startDate!=null and startDate!=''"> 
+			   and cdate &gt;= #{startDate}
+			</if>
+			
+			<if test="endDate!=null and endDate!=''">
+			   and cdate &lt;= #{endDate}
+			</if>
+ 
+		</where>
+		order by id desc
+		<if test="page">
+			  limit #{offset} ,#{pageSize}
+		</if>
+		
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="Int">
+		select count(0) from torder  
+		<where>
+			<if test="id!=null and id!=0">
+			   and id= #{id}
+			</if>
+			<if test="uid!=null and uid!=0">
+			   and uid= #{uid}
+			</if>
+			<if test="type!=null">
+			   and type= #{type}
+			</if>
+			<if test="startDate!=null and startDate!=''"> 
+			   and cdate &gt;= #{startDate}
+			</if>
+ 
+			<if test="endDate!=null and endDate!=''">
+			   and cdate &lt;= #{endDate}
+			</if>
+ 
+		</where>		
+		
+	</select>
+	
+	
+	
+	
+	<select id="queryOrderById" parameterType="int" resultType="Order">
+		select * from torder where id=${value}
+	</select>
+ 
+
+
+	<insert id="insertOrder" useGeneratedKeys="true" keyProperty="id" parameterType="Order">
+		insert into torder
+		(bianhao,uid,goodsid,num,danjia,cdate,type,tuihuodan)
+		values
+		(#{bianhao},#{uid},#{goodsid},#{num},#{danjia},#{cdate},#{type},#{tuihuodan});
+	</insert>
+ 
+	
+
+
+	<update id="updateOrder" parameterType="Order" >
+		update torder set
+		tuihuodan=#{tuihuodan}
+		where
+		id=#{id}	
+	</update>
+	
+ 
+	
+	<delete id="deleteOrder" parameterType="int">
+	    delete from  torder where id=${value}
+	</delete>
+	<select id="report1" parameterType="java.util.Map" resultType="Order">
+		
+		select DATE_FORMAT(cdate,'%Y-%m') cdate,sum(danjia*num) danjia from jinhuo  group by DATE_FORMAT(cdate,'%Y-%m')
+ 
+	</select>
+ <select id="report2" parameterType="java.util.Map" resultType="Order">
+		
+		select DATE_FORMAT(cdate,'%Y-%m') cdate,sum(danjia*num) danjia from torder where tuihuodan is null  group by DATE_FORMAT(cdate,'%Y-%m')
+ 
+	</select>
+</mapper>
+
+ 
